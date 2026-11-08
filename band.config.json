@@ -1,0 +1,31 @@
+{
+  "name": "OpsMind",
+  "version": "1.0.0",
+  "description": "AI-Powered Incident Response & Persistent Memory Agent",
+  "category": "Engineering & DevOps",
+  "entrypoint": {
+    "backend": {
+      "command": "uvicorn app.main:app --port 8000",
+      "cwd": "backend",
+      "port": 8000,
+      "health_check": "http://localhost:8000/api/v1/health"
+    },
+    "frontend": {
+      "command": "npm run dev",
+      "cwd": "frontend",
+      "port": 5173
+    }
+  },
+  "capabilities": [
+    "incident_investigation",
+    "hindsight_persistent_memory",
+    "causal_root_cause_analysis",
+    "guarded_remediation_runbooks",
+    "telemetry_alert_ingestion"
+  ],
+  "environment": {
+    "HINDSIGHT_BASE_URL": "http://localhost:8888",
+    "GEMINI_MODEL": "gemini-2.5-flash"
+  }
+}
+

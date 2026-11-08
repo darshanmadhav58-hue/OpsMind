@@ -1,0 +1,19 @@
+{
+  "name": "Scenario 2: Recurrent Outage with Hindsight Recall",
+  "description": "Recurrence of cache memory alarm 2 weeks later. OpsMind recalls Scenario 1 and drafts validated fix in <2s.",
+  "payload": {
+    "source": "Datadog-APM",
+    "service": "payment-service",
+    "alert_name": "LatencySpikeAndMemoryAlarm",
+    "severity": "P1",
+    "message": "PaymentService latency spiked past 4200ms with Redis connection backlog. Unevicted cache keys rising rapidly.",
+    "raw_logs": "WARN 2026-11-05T11:02:11Z [payment-service-82c11] ConnectionTimeout: Redis cluster read timeout. Eviction buffer 98%."
+  },
+  "expected_triage": {
+    "memory_match": true,
+    "similarity_threshold": 0.85,
+    "recalled_incident": "Linked to Scenario 1",
+    "prescribed_command": "redis-cli config set maxmemory-policy volatile-lru",
+    "runbook_risk": "CAUTION"
+  }
+}

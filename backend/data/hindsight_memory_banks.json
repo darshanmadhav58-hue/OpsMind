@@ -1,0 +1,98 @@
+{
+  "opsmind-incidents": [
+    {
+      "memory_id": "MEM-0001",
+      "bank_id": "opsmind-incidents",
+      "content": "Incident #INC-20261108-6055 Resolution Report:\nService: checkout-service (Severity: P1)\nTitle: checkout-service: OOMKilled_MemoryStarvation\nSymptoms: checkout-service pod memory limits exceeded. 504 Gateway Timeouts.\nConfirmed Root Cause: Redis cache eviction policy set to noeviction under high traffic\nApplied Resolution: Applied hotfix: config set maxmemory-policy volatile-lru and expanded Redis RAM\nLessons Learned: Never allow noeviction policy in production caching tiers.\nTags: checkout-service, outage-fix, verified-resolution",
+      "tags": [
+        "checkout-service",
+        "p1",
+        "incident-resolution",
+        "post-mortem",
+        "verified-fix",
+        "redis",
+        "eviction",
+        "timeout",
+        "memory"
+      ],
+      "metadata": {
+        "incident_id": "INC-20261108-6055",
+        "service": "checkout-service",
+        "severity": "P1",
+        "root_cause": "Redis cache eviction policy set to noeviction under high traffic",
+        "resolution": "Applied hotfix: config set maxmemory-policy volatile-lru and expanded Redis RAM",
+        "resolved_at": "2026-11-08T15:06:12.502801"
+      },
+      "created_at": "2026-11-08T15:06:12.505762+00:00"
+    }
+  ],
+  "opsmind-services": [
+    {
+      "memory_id": "MEM-0001",
+      "bank_id": "opsmind-services",
+      "content": "payment-service is a Tier-1 critical service responsible for checkout transactions. Dependencies: redis-cache-cluster (port 6379, session & rate-limiting cache), postgres-db-primary (port 5432). In production, memory limit is 4GiB. Vulnerable to Redis buffer starvation if maxmemory-policy is set to noeviction.",
+      "tags": [
+        "payment-service",
+        "redis",
+        "postgres",
+        "tier-1"
+      ],
+      "metadata": {
+        "service": "payment-service",
+        "tier": "P1",
+        "owner": "payments-team"
+      },
+      "created_at": "2026-11-08T15:06:12.463356+00:00"
+    },
+    {
+      "memory_id": "MEM-0002",
+      "bank_id": "opsmind-services",
+      "content": "auth-service is a Tier-1 authentication service issuing JWT tokens. Dependencies: redis-sessions (port 6380), ldap-identity-provider. Canary deployments require verification of token validation latency.",
+      "tags": [
+        "auth-service",
+        "jwt",
+        "redis",
+        "tier-1"
+      ],
+      "metadata": {
+        "service": "auth-service",
+        "tier": "P1",
+        "owner": "security-team"
+      },
+      "created_at": "2026-11-08T15:06:12.463372+00:00"
+    }
+  ],
+  "opsmind-runbooks": [
+    {
+      "memory_id": "MEM-0001",
+      "bank_id": "opsmind-runbooks",
+      "content": "Standard Runbook for Redis Connection Pool Exhaustion: 1. Verify active connection count via `redis-cli info clients`. 2. Check Redis memory usage via `redis-cli info memory`. 3. Ensure eviction policy is set to volatile-lru or allkeys-lru. 4. Expand connection pool size or restart stalled pods safely.",
+      "tags": [
+        "redis",
+        "runbook",
+        "connection-pool",
+        "oom"
+      ],
+      "metadata": {
+        "runbook_id": "RB-REDIS-001",
+        "target": "redis"
+      },
+      "created_at": "2026-11-08T15:06:12.463376+00:00"
+    },
+    {
+      "memory_id": "MEM-0002",
+      "bank_id": "opsmind-runbooks",
+      "content": "Verified Runbook for checkout-service: Applied hotfix: config set maxmemory-policy volatile-lru and expanded Redis RAM",
+      "tags": [
+        "checkout-service",
+        "runbook",
+        "verified-fix"
+      ],
+      "metadata": {
+        "incident_id": "INC-20261108-6055",
+        "service": "checkout-service"
+      },
+      "created_at": "2026-11-08T15:06:12.530133+00:00"
+    }
+  ]
+}

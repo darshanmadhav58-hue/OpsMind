@@ -1,0 +1,23 @@
+{
+  "name": "Scenario 1: Cold Start Novel Outage",
+  "description": "First time occurrence of Redis memory exhaustion on payment-service with no prior Hindsight memory.",
+  "payload": {
+    "source": "Kubernetes-Alertmanager",
+    "service": "payment-service",
+    "alert_name": "PodEvicted_MemoryStarvation",
+    "severity": "P1",
+    "message": "PaymentService pods undergoing OOMKilled evictions in prod-eu-west-1. Error rate elevated to 14.8%.",
+    "raw_logs": "FATAL 2026-11-05T10:14:02Z [payment-service-78f99] OutOfMemoryError: Java heap space. Redis connection thread dump: 250 threads blocked on eviction buffer."
+  },
+  "expected_triage": {
+    "memory_match": false,
+    "investigation_step": "EXPLORATORY_HYPOTHESIS",
+    "runbook_risk": "SAFE"
+  },
+  "resolution": {
+    "confirmed_root_cause": "Redis cache eviction policy set to noeviction under flash traffic",
+    "resolution_summary": "Applied config update: maxmemory-policy volatile-lru and expanded cluster RAM to 8GB",
+    "lessons_learned": "Never allow noeviction policy in production caching tiers."
+  }
+}
+

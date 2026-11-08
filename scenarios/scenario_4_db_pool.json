@@ -1,0 +1,23 @@
+{
+  "name": "Scenario 4: Database Connection Pool Exhaustion & Deadlock",
+  "description": "Critical database connection pool saturation. OpsMind recalls Redis & DB connection pool playbooks from opsmind-runbooks.",
+  "payload": {
+    "source": "Datadog-APM",
+    "service": "orders-db",
+    "alert_name": "ConnectionPoolExhaustionAndLockWait",
+    "severity": "P1",
+    "message": "Orders database connection pool saturated at 100% capacity. Deadlock detected on transaction table.",
+    "raw_logs": "FATAL 2026-11-05T13:10:00Z [orders-db-pool] ConnectionPoolTimeout: 0 available connections. 80 threads waiting on row lock."
+  },
+  "expected_triage": {
+    "runbook_match": true,
+    "runbook_bank": "opsmind-runbooks",
+    "runbook_risk": "CAUTION"
+  },
+  "resolution": {
+    "confirmed_root_cause": "Long-running batch report held table lock without releasing connection pool handles",
+    "resolution_summary": "Killed blocking batch transaction, scaled pool capacity to 100, and moved report query to read-replica",
+    "lessons_learned": "Enforce strict query timeout limits and offload analytics queries to read-replicas."
+  }
+}
+

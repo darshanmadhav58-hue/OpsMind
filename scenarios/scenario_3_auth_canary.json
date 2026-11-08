@@ -1,0 +1,23 @@
+{
+  "name": "Scenario 3: Canary Token Verification Latency",
+  "description": "Auth service canary deployment exhibits elevated latency. OpsMind recalls auth-service topology and suggests cache warm-up.",
+  "payload": {
+    "source": "Prometheus-Alertmanager",
+    "service": "auth-service",
+    "alert_name": "CanaryLatencyAndTokenSpike",
+    "severity": "P2",
+    "message": "AuthService canary deployment v2.1.0 showing elevated JWT validation latency and session cache latency.",
+    "raw_logs": "WARN 2026-11-05T12:45:00Z [auth-service-canary] TokenValidationException: public key cache miss, latency 1200ms."
+  },
+  "expected_triage": {
+    "topology_context": "auth-service is a Tier-1 authentication service issuing JWT tokens",
+    "isolation": "Isolated from payment-service memory",
+    "runbook_risk": "SAFE"
+  },
+  "resolution": {
+    "confirmed_root_cause": "Cold public key cache on newly provisioned canary pods",
+    "resolution_summary": "Warmed up public key cache before shifting production canary traffic",
+    "lessons_learned": "Always pre-warm JWT public key cache during canary rollout sequence."
+  }
+}
+
